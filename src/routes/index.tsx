@@ -335,7 +335,7 @@ function CoverArt({ cover }: { cover: Cover }) {
   const bandName = band.title;
   const albumName = album.tail;
 
-  const art = renderArt(style, bandName, albumName, image.url);
+  const art = renderArt(style, bandName, albumName, image.url, explicit);
   return (
     <div className="@container relative h-full w-full">
       {art}
@@ -346,20 +346,12 @@ function CoverArt({ cover }: { cover: Cover }) {
 
 function ParentalAdvisory() {
   return (
-    <div
-      className="absolute bottom-[5%] left-[5%] w-[28%] bg-black px-1.5 py-1 text-center ring-1 ring-white/70"
-      style={{ fontFamily: "'Archivo Black', sans-serif" }}
-      aria-label="Parental advisory: explicit content"
-    >
-      <p className="text-white leading-[1.05] text-[clamp(8px,2.2cqw,16px)]">
-        PARENTAL
-        <br />
-        ADVISORY
-      </p>
-      <p className="mt-0.5 text-white leading-none text-[clamp(5px,1.4cqw,10px)] tracking-wider">
-        EXPLICIT CONTENT
-      </p>
-    </div>
+    <img
+      src="https://www.freeiconspng.com/thumbs/parental-advisory-png/hd-parental-advisory-png-1.png"
+      crossOrigin="anonymous"
+      alt="Parental Advisory: Explicit Content"
+      className="absolute bottom-[5%] left-[5%] w-[28%]"
+    />
   );
 }
 
@@ -368,6 +360,7 @@ function renderArt(
   bandName: string,
   albumName: string,
   imageUrl: string,
+  explicit: boolean,
 ) {
   const image = { url: imageUrl };
   switch (style) {
@@ -390,12 +383,14 @@ function renderArt(
             >
               {bandName}
             </p>
-            <p
-              className="mt-1 text-sm uppercase tracking-[0.25em] text-white/80"
-              style={{ fontFamily: "'Space Mono', monospace" }}
-            >
-              {albumName}
-            </p>
+            {!explicit && (
+              <p
+                className="mt-1 text-sm uppercase tracking-[0.25em] text-white/80"
+                style={{ fontFamily: "'Space Mono', monospace" }}
+              >
+                {albumName}
+              </p>
+            )}
           </div>
         </div>
       );
