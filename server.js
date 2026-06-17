@@ -20,4 +20,4 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(process.env.PORT || 10000);
+server.listen(process.env.PORT || 3000);
