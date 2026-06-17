@@ -331,11 +331,47 @@ function SourceLink({ href, label }: { href: string; label: string }) {
 /* ---------------- Cover art renderer ---------------- */
 
 function CoverArt({ cover }: { cover: Cover }) {
-  const { band, album, image, style } = cover;
+  const { band, album, image, style, explicit } = cover;
   const bandName = band.title;
   const albumName = album.tail;
 
+  const art = renderArt(style, bandName, albumName, image.url);
+  return (
+    <div className="relative h-full w-full">
+      {art}
+      {explicit && <ParentalAdvisory />}
+    </div>
+  );
+}
+
+function ParentalAdvisory() {
+  return (
+    <div
+      className="absolute bottom-[5%] left-[5%] w-[28%] bg-black px-1.5 py-1 text-center ring-1 ring-white/70"
+      style={{ fontFamily: "'Archivo Black', sans-serif" }}
+      aria-label="Parental advisory: explicit content"
+    >
+      <p className="text-white leading-[1.05] text-[clamp(8px,2.2cqw,16px)]">
+        PARENTAL
+        <br />
+        ADVISORY
+      </p>
+      <p className="mt-0.5 text-white leading-none text-[clamp(5px,1.4cqw,10px)] tracking-wider">
+        EXPLICIT CONTENT
+      </p>
+    </div>
+  );
+}
+
+function renderArt(
+  style: CoverStyle,
+  bandName: string,
+  albumName: string,
+  imageUrl: string,
+) {
+  const image = { url: imageUrl };
   switch (style) {
+
     case "indie":
       return (
         <div className="relative h-full w-full bg-black">
