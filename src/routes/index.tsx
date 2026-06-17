@@ -360,6 +360,7 @@ function renderArt(
   bandName: string,
   albumName: string,
   imageUrl: string,
+  explicit: boolean,
 ) {
   const image = { url: imageUrl };
   switch (style) {
