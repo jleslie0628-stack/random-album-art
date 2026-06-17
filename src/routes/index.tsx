@@ -105,7 +105,9 @@ function Index() {
         album,
         image,
         style: randomStyle(),
+        explicit: Math.random() < 0.1,
         createdAt: Date.now(),
+
       };
       setCover(next);
       setHistory((prev) => {
