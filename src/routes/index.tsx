@@ -330,12 +330,57 @@ function SourceLink({ href, label }: { href: string; label: string }) {
 
 /* ---------------- Cover art renderer ---------------- */
 
+function useImageBrightness(imageUrl: string): number | null {
+  const [brightness, setBrightness] = useState<number | null>(null);
+
+  useEffect(() => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        const sampleSize = 64;
+        canvas.width = sampleSize;
+        canvas.height = sampleSize;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          img.naturalWidth,
+          img.naturalHeight,
+          0,
+          0,
+          sampleSize,
+          sampleSize,
+        );
+        const data = ctx.getImageData(0, 0, sampleSize, sampleSize).data;
+        let total = 0;
+        for (let i = 0; i < data.length; i += 4) {
+          total +=
+            0.299 * data[i] +
+            0.587 * data[i + 1] +
+            0.114 * data[i + 2];
+        }
+        setBrightness(total / (data.length / 4));
+      } catch {
+        setBrightness(128);
+      }
+    };
+    img.onerror = () => setBrightness(128);
+    img.src = imageUrl;
+  }, [imageUrl]);
+
+  return brightness;
+}
+
 function CoverArt({ cover }: { cover: Cover }) {
   const { band, album, image, style, explicit } = cover;
   const bandName = band.title;
   const albumName = album.tail;
+  const brightness = useImageBrightness(image.url);
 
-  const art = renderArt(style, bandName, albumName, image.url, explicit);
+  const art = renderArt(style, bandName, albumName, image.url, explicit, brightness);
   return (
     <div className="@container relative h-full w-full">
       {art}
@@ -361,8 +406,11 @@ function renderArt(
   albumName: string,
   imageUrl: string,
   explicit: boolean,
+  brightness: number | null,
 ) {
   const image = { url: imageUrl };
+  const isDark = brightness !== null && brightness < 100;
+  const isBright = brightness !== null && brightness > 210;
   switch (style) {
 
     case "indie":
@@ -415,17 +463,23 @@ function renderArt(
           />
           <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
             <p
-              className="text-5xl tracking-widest text-white"
+              className="text-5xl tracking-widest"
               style={{
                 fontFamily: "'Bebas Neue', sans-serif",
-                textShadow: "3px 3px 0 #ff00aa, -3px -3px 0 #00ffff",
+                color: isBright ? "#160033" : "white",
+                textShadow: isBright
+                  ? "2px 2px 0 #ff00aa, -2px -2px 0 #00ffff"
+                  : "3px 3px 0 #ff00aa, -3px -3px 0 #00ffff",
               }}
             >
               {bandName.toUpperCase()}
             </p>
             <p
-              className="mt-3 text-xs uppercase tracking-[0.6em] text-cyan-200"
-              style={{ fontFamily: "'Space Mono', monospace" }}
+              className="mt-3 text-xs uppercase tracking-[0.6em]"
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                color: isBright ? "#160033" : "#a5f3fc",
+              }}
             >
               {albumName}
             </p>
@@ -476,14 +530,22 @@ function renderArt(
           />
           <div className="absolute inset-0 flex flex-col justify-between p-5">
             <p
-              className="text-[11px] uppercase tracking-widest text-black"
-              style={{ fontFamily: "'Space Mono', monospace" }}
+              className="text-[11px] uppercase tracking-widest"
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                color: isDark ? "white" : "black",
+                textShadow: isDark ? "0 1px 4px rgba(0,0,0,0.8)" : "none",
+              }}
             >
               ★ {albumName} ★
             </p>
             <p
-              className="text-6xl leading-[0.85] text-black"
-              style={{ fontFamily: "'Archivo Black', sans-serif" }}
+              className="text-6xl leading-[0.85]"
+              style={{
+                fontFamily: "'Archivo Black', sans-serif",
+                color: isDark ? "white" : "black",
+                textShadow: isDark ? "0 2px 8px rgba(0,0,0,0.7)" : "none",
+              }}
             >
               {bandName.toUpperCase()}
             </p>
@@ -504,15 +566,23 @@ function renderArt(
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
             <div className="border-y border-white/60 px-6 py-4">
               <p
-                className="text-3xl tracking-[0.15em] text-white"
-                style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+                className="text-3xl tracking-[0.15em]"
+                style={{
+                  fontFamily: "'Bebas Neue', sans-serif",
+                  color: isBright ? "black" : "white",
+                  textShadow: isBright ? "0 0 8px rgba(255,255,255,0.8)" : "none",
+                }}
               >
                 {bandName.toUpperCase()}
               </p>
             </div>
             <p
-              className="mt-5 text-[10px] uppercase tracking-[0.5em] text-white/70"
-              style={{ fontFamily: "'Space Mono', monospace" }}
+              className="mt-5 text-[10px] uppercase tracking-[0.5em]"
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                color: isBright ? "black" : "rgba(255,255,255,0.7)",
+                textShadow: isBright ? "0 0 6px rgba(255,255,255,0.6)" : "none",
+              }}
             >
               — {albumName} —
             </p>
