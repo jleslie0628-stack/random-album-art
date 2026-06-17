@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Accidental Albums" },
+      { name: "description", content: "Cover Canvas generates unique CD cover art by combining random Wikipedia articles, images, and quote snippets." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Accidental Albums" },
+      { property: "og:description", content: "Cover Canvas generates unique CD cover art by combining random Wikipedia articles, images, and quote snippets." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Accidental Albums" },
+      { name: "twitter:description", content: "Cover Canvas generates unique CD cover art by combining random Wikipedia articles, images, and quote snippets." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2a5166d9-472c-4c92-a2ce-846e2ac98226/id-preview-1fd18df9--73800c55-77dc-4ea5-9cb1-28393b2a5ac5.lovable.app-1781731132058.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2a5166d9-472c-4c92-a2ce-846e2ac98226/id-preview-1fd18df9--73800c55-77dc-4ea5-9cb1-28393b2a5ac5.lovable.app-1781731132058.png" },
     ],
     links: [
       {
