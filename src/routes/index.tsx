@@ -337,7 +337,7 @@ function CoverArt({ cover }: { cover: Cover }) {
 
   const art = renderArt(style, bandName, albumName, image.url);
   return (
-    <div className="relative h-full w-full">
+    <div className="@container relative h-full w-full">
       {art}
       {explicit && <ParentalAdvisory />}
     </div>
