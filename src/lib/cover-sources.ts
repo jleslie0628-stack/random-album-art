@@ -19,19 +19,28 @@ export interface ImageResult {
 }
 
 export async function fetchRandomWiki(): Promise<WikiResult> {
-  const res = await fetch(
-    "https://en.wikipedia.org/api/rest_v1/page/random/summary",
-    { headers: { Accept: "application/json" } },
-  );
-  if (!res.ok) throw new Error("Wikipedia request failed");
-  const data = await res.json();
-  return {
-    title: data.title as string,
-    url:
-      (data.content_urls?.desktop?.page as string) ??
-      `https://en.wikipedia.org/wiki/${encodeURIComponent(data.title)}`,
-  };
+  // Keep rolling until we land on a clean 3-word title with no parentheses.
+  for (let i = 0; i < 25; i++) {
+    const res = await fetch(
+      "https://en.wikipedia.org/api/rest_v1/page/random/summary",
+      { headers: { Accept: "application/json" } },
+    );
+    if (!res.ok) throw new Error("Wikipedia request failed");
+    const data = await res.json();
+    const title = (data.title as string) ?? "";
+    if (title.includes("(") || title.includes(")")) continue;
+    const words = title.trim().split(/\s+/);
+    if (words.length !== 3) continue;
+    return {
+      title,
+      url:
+        (data.content_urls?.desktop?.page as string) ??
+        `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`,
+    };
+  }
+  throw new Error("Couldn't find a 3-word Wikipedia title after 25 tries");
 }
+
 
 export async function fetchRandomQuote(): Promise<QuoteResult> {
   const res = await fetch("https://dummyjson.com/quotes/random");
