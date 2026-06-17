@@ -330,12 +330,57 @@ function SourceLink({ href, label }: { href: string; label: string }) {
 
 /* ---------------- Cover art renderer ---------------- */
 
+function useImageBrightness(imageUrl: string): number | null {
+  const [brightness, setBrightness] = useState<number | null>(null);
+
+  useEffect(() => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        const sampleSize = 64;
+        canvas.width = sampleSize;
+        canvas.height = sampleSize;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          img.naturalWidth,
+          img.naturalHeight,
+          0,
+          0,
+          sampleSize,
+          sampleSize,
+        );
+        const data = ctx.getImageData(0, 0, sampleSize, sampleSize).data;
+        let total = 0;
+        for (let i = 0; i < data.length; i += 4) {
+          total +=
+            0.299 * data[i] +
+            0.587 * data[i + 1] +
+            0.114 * data[i + 2];
+        }
+        setBrightness(total / (data.length / 4));
+      } catch {
+        setBrightness(128);
+      }
+    };
+    img.onerror = () => setBrightness(128);
+    img.src = imageUrl;
+  }, [imageUrl]);
+
+  return brightness;
+}
+
 function CoverArt({ cover }: { cover: Cover }) {
   const { band, album, image, style, explicit } = cover;
   const bandName = band.title;
   const albumName = album.tail;
+  const brightness = useImageBrightness(image.url);
 
-  const art = renderArt(style, bandName, albumName, image.url, explicit);
+  const art = renderArt(style, bandName, albumName, image.url, explicit, brightness);
   return (
     <div className="@container relative h-full w-full">
       {art}
