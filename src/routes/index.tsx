@@ -383,12 +383,14 @@ function renderArt(
             >
               {bandName}
             </p>
-            <p
-              className="mt-1 text-sm uppercase tracking-[0.25em] text-white/80"
-              style={{ fontFamily: "'Space Mono', monospace" }}
-            >
-              {albumName}
-            </p>
+            {!explicit && (
+              <p
+                className="mt-1 text-sm uppercase tracking-[0.25em] text-white/80"
+                style={{ fontFamily: "'Space Mono', monospace" }}
+              >
+                {albumName}
+              </p>
+            )}
           </div>
         </div>
       );
