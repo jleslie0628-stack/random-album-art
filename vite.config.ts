@@ -4,6 +4,7 @@ import viteReact from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite' // Add this import
 
 export default defineConfig({
+  base: '/',
   plugins: [
     tailwindcss(), // Add this here
     tanstackStart(),
