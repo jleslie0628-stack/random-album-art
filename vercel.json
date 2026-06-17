@@ -1,16 +1,4 @@
 {
   "buildCommand": "bun run build",
-  "outputDirectory": "dist",
-  "serverlessFunctionRegion": "iad1",
-  "functions": {
-    "api/**": {
-      "runtime": "nodejs20.x"
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/server.js"
-    }
-  ]
+  "outputDirectory": "dist"
 }
