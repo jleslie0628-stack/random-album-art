@@ -51,8 +51,10 @@ interface Cover {
   album: QuoteResult;
   image: ImageResult;
   style: CoverStyle;
+  explicit: boolean;
   createdAt: number;
 }
+
 
 const HISTORY_KEY = "wikiband.history.v1";
 
