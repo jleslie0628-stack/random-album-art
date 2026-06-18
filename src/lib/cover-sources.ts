@@ -27,7 +27,7 @@ export async function fetchRandomWiki(): Promise<WikiResult> {
     );
     if (!res.ok) throw new Error("Wikipedia request failed");
     const data = await res.json();
-    const title = (data.title as string) ?? "";
+    const title = ((data.title as string) ?? "").split(",")[0].trim();
     if (title.includes("(") || title.includes(")")) continue;
     const words = title.trim().split(/\s+/);
     if (words.length !== 3) continue;
