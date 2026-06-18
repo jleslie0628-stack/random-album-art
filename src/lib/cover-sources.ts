@@ -47,7 +47,8 @@ export async function fetchRandomQuote(): Promise<QuoteResult> {
   if (!res.ok) throw new Error("Quote request failed");
   const data = await res.json();
   const quote: string = data.quote ?? "";
-  const cleaned = quote.replace(/[.!?,;:"']+$/g, "").trim();
+  const beforeComma = quote.split(",")[0];
+  const cleaned = beforeComma.replace(/[.!?,;:"']+$/g, "").trim();
   const words = cleaned.split(/\s+/);
   const count = words.length >= 4 ? (Math.random() < 0.5 ? 3 : 4) : words.length;
   const tail = words.slice(-count).join(" ");
