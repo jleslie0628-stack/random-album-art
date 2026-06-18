@@ -11,6 +11,8 @@ import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
 import "@fontsource/archivo-black/400.css";
 
+import parentalAdvisoryAsset from "@/assets/parental-advisory.png.asset.json";
+
 import {
   fetchRandomImage,
   fetchRandomQuote,
@@ -392,8 +394,7 @@ function CoverArt({ cover }: { cover: Cover }) {
 function ParentalAdvisory() {
   return (
     <img
-      src="https://www.freeiconspng.com/thumbs/parental-advisory-png/hd-parental-advisory-png-1.png"
-      crossOrigin="anonymous"
+      src={parentalAdvisoryAsset.url}
       alt="Parental Advisory: Explicit Content"
       className="absolute bottom-[5%] left-[5%] w-[28%]"
     />
