@@ -425,7 +425,7 @@ function renderArt(
             style={{ filter: "grayscale(0.2) contrast(1.05) sepia(0.15)" }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70" />
-          <div className="absolute inset-0 flex flex-col justify-end p-6">
+          <div className={`absolute inset-0 flex flex-col justify-end p-6 ${explicit ? "items-end text-right" : ""}`}>
             <p
               className="text-2xl leading-tight text-white"
               style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}
@@ -541,7 +541,7 @@ function renderArt(
               ★ {albumName} ★
             </p>
             <p
-              className="text-6xl leading-[0.85]"
+              className={`text-6xl leading-[0.85] ${explicit ? "self-end text-right" : ""}`}
               style={{
                 fontFamily: "'Archivo Black', sans-serif",
                 color: isDark ? "white" : "black",
