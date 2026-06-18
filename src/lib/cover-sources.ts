@@ -27,7 +27,7 @@ export async function fetchRandomWiki(): Promise<WikiResult> {
     );
     if (!res.ok) throw new Error("Wikipedia request failed");
     const data = await res.json();
-    const title = (data.title as string) ?? "";
+    const title = ((data.title as string) ?? "").split(",")[0].trim();
     if (title.includes("(") || title.includes(")")) continue;
     const words = title.trim().split(/\s+/);
     if (words.length !== 3) continue;
@@ -47,7 +47,8 @@ export async function fetchRandomQuote(): Promise<QuoteResult> {
   if (!res.ok) throw new Error("Quote request failed");
   const data = await res.json();
   const quote: string = data.quote ?? "";
-  const cleaned = quote.replace(/[.!?,;:"']+$/g, "").trim();
+  const beforeComma = quote.split(",")[0];
+  const cleaned = beforeComma.replace(/[.!?,;:"']+$/g, "").trim();
   const words = cleaned.split(/\s+/);
   const count = words.length >= 4 ? (Math.random() < 0.5 ? 3 : 4) : words.length;
   const tail = words.slice(-count).join(" ");
