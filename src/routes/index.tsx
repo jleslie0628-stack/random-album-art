@@ -11,6 +11,8 @@ import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
 import "@fontsource/archivo-black/400.css";
 
+import parentalAdvisoryAsset from "@/assets/parental-advisory.png.asset.json";
+
 import {
   fetchRandomImage,
   fetchRandomQuote,
