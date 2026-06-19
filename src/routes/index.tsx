@@ -479,7 +479,8 @@ function renderArt(
               className="mt-3 text-xs uppercase tracking-[0.6em]"
               style={{
                 fontFamily: "'Space Mono', monospace",
-                color: isBright ? "#160033" : "#a5f3fc",
+                color: isBright ? "#160033" : "#06b6d4",
+                textShadow: isBright ? undefined : "0 1px 6px rgba(0,0,0,0.5)",
               }}
             >
               {albumName}
