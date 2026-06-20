@@ -4,7 +4,11 @@ export type CoverStyle =
   | "minimal"
   | "brutalist"
   | "noir"
-  | "punk";
+  | "punk"
+  | "rock"
+  | "pop"
+  | "rnb"
+  | "grunge";
 
 export const COVER_STYLES: CoverStyle[] = [
   "indie",
@@ -13,6 +17,10 @@ export const COVER_STYLES: CoverStyle[] = [
   "brutalist",
   "noir",
   "punk",
+  "rock",
+  "pop",
+  "rnb",
+  "grunge",
 ];
 
 export function randomStyle(): CoverStyle {
@@ -20,5 +28,6 @@ export function randomStyle(): CoverStyle {
 }
 
 export function styleLabel(s: CoverStyle): string {
+  if (s === "rnb") return "R&B";
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
