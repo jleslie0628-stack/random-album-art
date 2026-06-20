@@ -592,6 +592,170 @@ function renderArt(
         </div>
       );
 
+    case "rock":
+      return (
+        <div className="relative h-full w-full bg-[#1a1a1a]">
+          <img
+            src={image.url}
+            crossOrigin="anonymous"
+            alt=""
+            className="h-full w-full object-cover"
+            style={{ filter: "contrast(1.3) grayscale(0.5) brightness(0.7)" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+          <div className="absolute inset-0 flex flex-col justify-between p-6">
+            <p
+              className="text-[10px] uppercase tracking-[0.5em] text-white/60"
+              style={{ fontFamily: "'Space Mono', monospace" }}
+            >
+              {albumName}
+            </p>
+            <div>
+              <p
+                className="text-5xl leading-none tracking-tight"
+                style={{
+                  fontFamily: "'Archivo Black', sans-serif",
+                  color: "#f5f5f5",
+                  textShadow: "0 2px 10px rgba(0,0,0,0.8)",
+                }}
+              >
+                {bandName.toUpperCase()}
+              </p>
+              <div className="mt-2 h-1 w-24 bg-red-600" />
+            </div>
+          </div>
+        </div>
+      );
+
+    case "pop":
+      return (
+        <div className="relative h-full w-full bg-[#ffe4f2]">
+          <img
+            src={image.url}
+            crossOrigin="anonymous"
+            alt=""
+            className="h-full w-full object-cover"
+            style={{ filter: "saturate(1.4) contrast(1.05)" }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(255,105,180,0.35), rgba(0,255,255,0.25))",
+              mixBlendMode: "overlay",
+            }}
+          />
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+            <p
+              className="text-4xl leading-tight"
+              style={{
+                fontFamily: "'Archivo Black', sans-serif",
+                color: "#fff",
+                textShadow:
+                  "3px 3px 0 #ff69b4, -2px -2px 0 #00e5ff",
+              }}
+            >
+              {bandName.toUpperCase()}
+            </p>
+            <p
+              className="mt-3 text-[10px] uppercase tracking-[0.4em]"
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                color: "#fff",
+                textShadow: "0 1px 4px rgba(0,0,0,0.3)",
+              }}
+            >
+              {albumName}
+            </p>
+          </div>
+        </div>
+      );
+
+    case "rnb":
+      return (
+        <div className="relative h-full w-full bg-[#120b1a]">
+          <img
+            src={image.url}
+            crossOrigin="anonymous"
+            alt=""
+            className="h-full w-full object-cover"
+            style={{ filter: "sepia(0.3) contrast(1.1) brightness(0.6)" }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(80,20,100,0.45), rgba(20,10,40,0.7))",
+            }}
+          />
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+            <p
+              className="text-3xl tracking-wide"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontStyle: "italic",
+                color: "#f3e8ff",
+                textShadow: "0 2px 12px rgba(0,0,0,0.6)",
+              }}
+            >
+              {bandName}
+            </p>
+            <div className="mx-auto mt-3 h-px w-16 bg-[#c084fc] opacity-70" />
+            <p
+              className="mt-3 text-[10px] uppercase tracking-[0.5em]"
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                color: "#c084fc",
+                textShadow: "0 1px 4px rgba(0,0,0,0.5)",
+              }}
+            >
+              {albumName}
+            </p>
+          </div>
+        </div>
+      );
+
+    case "grunge":
+      return (
+        <div className="relative h-full w-full bg-[#3d3d3d]">
+          <img
+            src={image.url}
+            crossOrigin="anonymous"
+            alt=""
+            className="h-full w-full object-cover"
+            style={{ filter: "contrast(1.3) grayscale(0.7) brightness(0.75) sepia(0.2)" }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.15) 1px, rgba(0,0,0,0.15) 2px)",
+            }}
+          />
+          <div className="absolute inset-0 flex flex-col justify-between p-5">
+            <p
+              className="text-[11px] uppercase tracking-widest"
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                color: "#b8c4a0",
+              }}
+            >
+              {albumName}
+            </p>
+            <p
+              className="text-4xl leading-[0.9]"
+              style={{
+                fontFamily: "'Bebas Neue', sans-serif",
+                color: "#e8ecd6",
+                textShadow: "0 2px 8px rgba(0,0,0,0.7)",
+              }}
+            >
+              {bandName.toUpperCase()}
+            </p>
+          </div>
+        </div>
+      );
+
     case "punk":
     default:
       return (
