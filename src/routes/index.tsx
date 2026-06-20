@@ -480,7 +480,7 @@ function renderArt(
               style={{
                 fontFamily: "'Space Mono', monospace",
                 color: isBright ? "#160033" : "#06b6d4",
-                textShadow: isBright ? undefined : "0 1px 6px rgba(0,0,0,0.5)",
+                textShadow: "0 2px 8px rgba(0,0,0,0.9)",
               }}
             >
               {albumName}
