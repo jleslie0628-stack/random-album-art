@@ -56,6 +56,7 @@ interface Cover {
   album: QuoteResult;
   image: ImageResult;
   style: CoverStyle;
+  titlePos: TitlePos;
   explicit: boolean;
   createdAt: number;
 }
