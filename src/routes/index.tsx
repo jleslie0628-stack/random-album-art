@@ -23,8 +23,11 @@ import {
 } from "@/lib/cover-sources";
 import {
   randomStyle,
+  randomTitlePos,
   styleLabel,
+  titlePosClasses,
   type CoverStyle,
+  type TitlePos,
 } from "@/lib/cover-styles";
 
 export const Route = createFileRoute("/")({
@@ -53,6 +56,7 @@ interface Cover {
   album: QuoteResult;
   image: ImageResult;
   style: CoverStyle;
+  titlePos: TitlePos;
   explicit: boolean;
   createdAt: number;
 }
@@ -65,7 +69,9 @@ function loadHistory(): Cover[] {
   try {
     const raw = window.localStorage.getItem(HISTORY_KEY);
     if (!raw) return [];
-    return JSON.parse(raw) as Cover[];
+    const items = JSON.parse(raw) as Cover[];
+    // Backfill titlePos for covers saved before this field existed.
+    return items.map((c) => c.titlePos ? c : { ...c, titlePos: randomTitlePos(c.style) });
   } catch {
     return [];
   }
@@ -101,12 +107,14 @@ function Index() {
         fetchRandomQuote(),
         fetchRandomImage(),
       ]);
+      const style = randomStyle();
       const next: Cover = {
         id: crypto.randomUUID(),
         band,
         album,
         image,
-        style: randomStyle(),
+        style,
+        titlePos: randomTitlePos(style),
         explicit: Math.random() < 0.1,
         createdAt: Date.now(),
 
@@ -377,12 +385,12 @@ function useImageBrightness(imageUrl: string): number | null {
 }
 
 function CoverArt({ cover }: { cover: Cover }) {
-  const { band, album, image, style, explicit } = cover;
+  const { band, album, image, style, titlePos, explicit } = cover;
   const bandName = band.title;
   const albumName = album.tail;
   const brightness = useImageBrightness(image.url);
 
-  const art = renderArt(style, bandName, albumName, image.url, explicit, brightness);
+  const art = renderArt(style, bandName, albumName, image.url, explicit, brightness, titlePos);
   return (
     <div className="@container relative h-full w-full">
       {art}
@@ -396,8 +404,29 @@ function ParentalAdvisory() {
     <img
       src={parentalAdvisoryAsset.url}
       alt="Parental Advisory: Explicit Content"
-      className="absolute bottom-[5%] left-[5%] w-[28%]"
+      className="absolute bottom-[5%] left-[5%] w-[28%] z-20"
     />
+  );
+}
+
+function TitleBlock({
+  pos,
+  className,
+  style,
+  children,
+}: {
+  pos: TitlePos;
+  className?: string;
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={`absolute max-w-[90%] z-10 ${titlePosClasses(pos)} ${className ?? ""}`}
+      style={style}
+    >
+      {children}
+    </div>
   );
 }
 
@@ -408,6 +437,7 @@ function renderArt(
   imageUrl: string,
   explicit: boolean,
   brightness: number | null,
+  titlePos: TitlePos,
 ) {
   const image = { url: imageUrl };
   const isDark = brightness !== null && brightness < 100;
@@ -425,22 +455,21 @@ function renderArt(
             style={{ filter: "grayscale(0.2) contrast(1.05) sepia(0.15)" }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70" />
-          <div className={`absolute inset-0 flex flex-col justify-end p-6 ${explicit ? "items-end text-right" : ""}`}>
+          {/* subtitle: bottom row */}
+          <p
+            className="absolute bottom-5 left-5 right-5 text-sm uppercase tracking-[0.25em] text-white/80"
+            style={{ fontFamily: "'Space Mono', monospace" }}
+          >
+            {albumName}
+          </p>
+          <TitleBlock pos={titlePos}>
             <p
               className="text-2xl leading-tight text-white"
               style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}
             >
               {bandName}
             </p>
-            {!explicit && (
-              <p
-                className="mt-1 text-sm uppercase tracking-[0.25em] text-white/80"
-                style={{ fontFamily: "'Space Mono', monospace" }}
-              >
-                {albumName}
-              </p>
-            )}
-          </div>
+          </TitleBlock>
         </div>
       );
 
@@ -462,7 +491,18 @@ function renderArt(
               mixBlendMode: "screen",
             }}
           />
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+          {/* subtitle: locked to center row */}
+          <p
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs uppercase tracking-[0.6em] text-center"
+            style={{
+              fontFamily: "'Space Mono', monospace",
+              color: isBright ? "#160033" : "#06b6d4",
+              textShadow: "0 2px 8px rgba(0,0,0,0.9)",
+            }}
+          >
+            {albumName}
+          </p>
+          <TitleBlock pos={titlePos}>
             <p
               className="text-5xl tracking-widest"
               style={{
@@ -475,17 +515,7 @@ function renderArt(
             >
               {bandName.toUpperCase()}
             </p>
-            <p
-              className="mt-3 text-xs uppercase tracking-[0.6em]"
-              style={{
-                fontFamily: "'Space Mono', monospace",
-                color: isBright ? "#160033" : "#06b6d4",
-                textShadow: "0 2px 8px rgba(0,0,0,0.9)",
-              }}
-            >
-              {albumName}
-            </p>
-          </div>
+          </TitleBlock>
         </div>
       );
 
@@ -503,20 +533,21 @@ function renderArt(
               />
             </div>
           </div>
-          <div className="absolute inset-0 flex flex-col justify-between p-8">
+          {/* subtitle: top */}
+          <p
+            className="absolute top-8 left-8 text-[10px] uppercase tracking-[0.4em] text-black/70"
+            style={{ fontFamily: "'Inter', sans-serif" }}
+          >
+            {albumName}
+          </p>
+          <TitleBlock pos={titlePos}>
             <p
-              className="text-[10px] uppercase tracking-[0.4em] text-black/70"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
-              {albumName}
-            </p>
-            <p
-              className="self-end text-right text-2xl text-black"
+              className="text-2xl text-black"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
               {bandName}
             </p>
-          </div>
+          </TitleBlock>
         </div>
       );
 
@@ -530,19 +561,20 @@ function renderArt(
             className="absolute inset-0 h-full w-full object-cover mix-blend-multiply"
             style={{ filter: "contrast(1.2) grayscale(1)" }}
           />
-          <div className="absolute inset-0 flex flex-col justify-between p-5">
+          {/* subtitle: top */}
+          <p
+            className="absolute top-5 left-5 right-5 text-[11px] uppercase tracking-widest"
+            style={{
+              fontFamily: "'Space Mono', monospace",
+              color: isDark ? "white" : "black",
+              textShadow: isDark ? "0 1px 4px rgba(0,0,0,0.8)" : "none",
+            }}
+          >
+            ★ {albumName} ★
+          </p>
+          <TitleBlock pos={titlePos}>
             <p
-              className="text-[11px] uppercase tracking-widest"
-              style={{
-                fontFamily: "'Space Mono', monospace",
-                color: isDark ? "white" : "black",
-                textShadow: isDark ? "0 1px 4px rgba(0,0,0,0.8)" : "none",
-              }}
-            >
-              ★ {albumName} ★
-            </p>
-            <p
-              className={`text-6xl leading-[0.85] ${explicit ? "self-end text-right" : ""}`}
+              className="text-6xl leading-[0.85]"
               style={{
                 fontFamily: "'Archivo Black', sans-serif",
                 color: isDark ? "white" : "black",
@@ -551,7 +583,7 @@ function renderArt(
             >
               {bandName.toUpperCase()}
             </p>
-          </div>
+          </TitleBlock>
         </div>
       );
 
@@ -565,7 +597,18 @@ function renderArt(
             className="h-full w-full object-cover"
             style={{ filter: "grayscale(1) brightness(0.55) contrast(1.4)" }}
           />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+          {/* subtitle: middle */}
+          <p
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] uppercase tracking-[0.5em] text-center"
+            style={{
+              fontFamily: "'Space Mono', monospace",
+              color: isBright ? "black" : "rgba(255,255,255,0.7)",
+              textShadow: isBright ? "0 0 6px rgba(255,255,255,0.6)" : "none",
+            }}
+          >
+            — {albumName} —
+          </p>
+          <TitleBlock pos={titlePos}>
             <div className="border-y border-white/60 px-6 py-4">
               <p
                 className="text-3xl tracking-[0.15em]"
@@ -578,17 +621,7 @@ function renderArt(
                 {bandName.toUpperCase()}
               </p>
             </div>
-            <p
-              className="mt-5 text-[10px] uppercase tracking-[0.5em]"
-              style={{
-                fontFamily: "'Space Mono', monospace",
-                color: isBright ? "black" : "rgba(255,255,255,0.7)",
-                textShadow: isBright ? "0 0 6px rgba(255,255,255,0.6)" : "none",
-              }}
-            >
-              — {albumName} —
-            </p>
-          </div>
+          </TitleBlock>
         </div>
       );
 
@@ -603,27 +636,26 @@ function renderArt(
             style={{ filter: "contrast(1.3) grayscale(0.5) brightness(0.7)" }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-          <div className="absolute inset-0 flex flex-col justify-between p-6">
+          {/* subtitle: top */}
+          <p
+            className="absolute top-5 left-5 right-5 text-[10px] uppercase tracking-[0.5em] text-white/60"
+            style={{ fontFamily: "'Space Mono', monospace" }}
+          >
+            {albumName}
+          </p>
+          <TitleBlock pos={titlePos}>
             <p
-              className="text-[10px] uppercase tracking-[0.5em] text-white/60"
-              style={{ fontFamily: "'Space Mono', monospace" }}
+              className="text-5xl leading-none tracking-tight"
+              style={{
+                fontFamily: "'Archivo Black', sans-serif",
+                color: "#f5f5f5",
+                textShadow: "0 2px 10px rgba(0,0,0,0.8)",
+              }}
             >
-              {albumName}
+              {bandName.toUpperCase()}
             </p>
-            <div>
-              <p
-                className="text-5xl leading-none tracking-tight"
-                style={{
-                  fontFamily: "'Archivo Black', sans-serif",
-                  color: "#f5f5f5",
-                  textShadow: "0 2px 10px rgba(0,0,0,0.8)",
-                }}
-              >
-                {bandName.toUpperCase()}
-              </p>
-              <div className="mt-2 h-1 w-24 bg-red-600" />
-            </div>
-          </div>
+            <div className="mt-2 h-1 w-24 bg-red-600" />
+          </TitleBlock>
         </div>
       );
 
@@ -645,29 +677,29 @@ function renderArt(
               mixBlendMode: "overlay",
             }}
           />
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+          {/* subtitle: middle */}
+          <p
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] uppercase tracking-[0.4em] text-center"
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              color: "#fff",
+              textShadow: "0 1px 4px rgba(0,0,0,0.5)",
+            }}
+          >
+            {albumName}
+          </p>
+          <TitleBlock pos={titlePos}>
             <p
               className="text-4xl leading-tight"
               style={{
                 fontFamily: "'Archivo Black', sans-serif",
                 color: "#fff",
-                textShadow:
-                  "3px 3px 0 #ff69b4, -2px -2px 0 #00e5ff",
+                textShadow: "3px 3px 0 #ff69b4, -2px -2px 0 #00e5ff",
               }}
             >
               {bandName.toUpperCase()}
             </p>
-            <p
-              className="mt-3 text-[10px] uppercase tracking-[0.4em]"
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                color: "#fff",
-                textShadow: "0 1px 4px rgba(0,0,0,0.3)",
-              }}
-            >
-              {albumName}
-            </p>
-          </div>
+          </TitleBlock>
         </div>
       );
 
@@ -688,7 +720,18 @@ function renderArt(
                 "linear-gradient(180deg, rgba(80,20,100,0.45), rgba(20,10,40,0.7))",
             }}
           />
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+          {/* subtitle: middle */}
+          <p
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] uppercase tracking-[0.5em] text-center"
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              color: "#c084fc",
+              textShadow: "0 1px 4px rgba(0,0,0,0.5)",
+            }}
+          >
+            {albumName}
+          </p>
+          <TitleBlock pos={titlePos}>
             <p
               className="text-3xl tracking-wide"
               style={{
@@ -700,18 +743,7 @@ function renderArt(
             >
               {bandName}
             </p>
-            <div className="mx-auto mt-3 h-px w-16 bg-[#c084fc] opacity-70" />
-            <p
-              className="mt-3 text-[10px] uppercase tracking-[0.5em]"
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                color: "#c084fc",
-                textShadow: "0 1px 4px rgba(0,0,0,0.5)",
-              }}
-            >
-              {albumName}
-            </p>
-          </div>
+          </TitleBlock>
         </div>
       );
 
@@ -732,16 +764,17 @@ function renderArt(
                 "repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.15) 1px, rgba(0,0,0,0.15) 2px)",
             }}
           />
-          <div className="absolute inset-0 flex flex-col justify-between p-5">
-            <p
-              className="text-[11px] uppercase tracking-widest"
-              style={{
-                fontFamily: "'Space Mono', monospace",
-                color: "#b8c4a0",
-              }}
-            >
-              {albumName}
-            </p>
+          {/* subtitle: top */}
+          <p
+            className="absolute top-5 left-5 right-5 text-[11px] uppercase tracking-widest"
+            style={{
+              fontFamily: "'Space Mono', monospace",
+              color: "#b8c4a0",
+            }}
+          >
+            {albumName}
+          </p>
+          <TitleBlock pos={titlePos}>
             <p
               className="text-4xl leading-[0.9]"
               style={{
@@ -752,7 +785,7 @@ function renderArt(
             >
               {bandName.toUpperCase()}
             </p>
-          </div>
+          </TitleBlock>
         </div>
       );
 
@@ -767,14 +800,7 @@ function renderArt(
             className="h-full w-full object-cover mix-blend-multiply"
             style={{ filter: "contrast(1.4) grayscale(1)" }}
           />
-          <div
-            className="absolute left-3 top-3 max-w-[85%] -rotate-3 bg-black px-3 py-2"
-            style={{ fontFamily: "'Archivo Black', sans-serif" }}
-          >
-            <p className="text-2xl leading-none text-yellow-300">
-              {bandName.toUpperCase()}
-            </p>
-          </div>
+          {/* subtitle: bottom-right */}
           <div
             className="absolute bottom-4 right-3 rotate-2 bg-white px-3 py-1 ring-2 ring-black"
             style={{ fontFamily: "'Space Mono', monospace" }}
@@ -783,7 +809,18 @@ function renderArt(
               {albumName}
             </p>
           </div>
+          <TitleBlock pos={titlePos}>
+            <div
+              className="-rotate-3 bg-black px-3 py-2"
+              style={{ fontFamily: "'Archivo Black', sans-serif" }}
+            >
+              <p className="text-2xl leading-none text-yellow-300">
+                {bandName.toUpperCase()}
+              </p>
+            </div>
+          </TitleBlock>
         </div>
       );
   }
 }
+
