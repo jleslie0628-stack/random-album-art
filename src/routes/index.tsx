@@ -492,16 +492,17 @@ function renderArt(
             }}
           />
           {/* subtitle: locked to center row */}
-          <p
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs uppercase tracking-[0.6em] text-center"
-            style={{
-              fontFamily: "'Space Mono', monospace",
-              color: isBright ? "#160033" : "#06b6d4",
-              textShadow: "0 2px 8px rgba(0,0,0,0.9)",
-            }}
-          >
-            {albumName}
-          </p>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white border-2 border-teal-500 px-4 py-2">
+            <p
+              className="text-xs uppercase tracking-[0.6em] text-center"
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                color: "#160033",
+              }}
+            >
+              {albumName}
+            </p>
+          </div>
           <TitleBlock pos={titlePos}>
             <p
               className="text-5xl tracking-widest"
