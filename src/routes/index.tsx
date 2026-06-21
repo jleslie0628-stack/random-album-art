@@ -105,12 +105,14 @@ function Index() {
         fetchRandomQuote(),
         fetchRandomImage(),
       ]);
+      const style = randomStyle();
       const next: Cover = {
         id: crypto.randomUUID(),
         band,
         album,
         image,
-        style: randomStyle(),
+        style,
+        titlePos: randomTitlePos(style),
         explicit: Math.random() < 0.1,
         createdAt: Date.now(),
 
