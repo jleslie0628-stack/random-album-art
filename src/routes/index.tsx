@@ -23,8 +23,11 @@ import {
 } from "@/lib/cover-sources";
 import {
   randomStyle,
+  randomTitlePos,
   styleLabel,
+  titlePosClasses,
   type CoverStyle,
+  type TitlePos,
 } from "@/lib/cover-styles";
 
 export const Route = createFileRoute("/")({
