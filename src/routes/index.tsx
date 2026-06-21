@@ -69,7 +69,9 @@ function loadHistory(): Cover[] {
   try {
     const raw = window.localStorage.getItem(HISTORY_KEY);
     if (!raw) return [];
-    return JSON.parse(raw) as Cover[];
+    const items = JSON.parse(raw) as Cover[];
+    // Backfill titlePos for covers saved before this field existed.
+    return items.map((c) => c.titlePos ? c : { ...c, titlePos: randomTitlePos(c.style) });
   } catch {
     return [];
   }
