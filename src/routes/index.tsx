@@ -613,7 +613,7 @@ function renderArt(
           />
           {/* subtitle: middle */}
           <p
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] uppercase tracking-[0.5em] text-center"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] uppercase tracking-[0.2em] text-center whitespace-nowrap"
             style={{
               fontFamily: "'Space Mono', monospace",
               color: isBright ? "black" : "rgba(255,255,255,0.7)",
