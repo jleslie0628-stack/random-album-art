@@ -537,7 +537,7 @@ function renderArt(
       return (
         <div className="relative h-full w-full bg-[#f3efe7]">
           <div className="absolute inset-0 p-8">
-            <div className="h-full w-full overflow-hidden">
+            <div className="relative h-full w-full overflow-hidden">
               <img
                 src={image.url}
                 crossOrigin="anonymous"
@@ -545,23 +545,23 @@ function renderArt(
                 className="h-full w-full object-cover"
                 style={{ filter: "grayscale(1) contrast(1.05)" }}
               />
+              {/* subtitle: top */}
+              <p
+                className="absolute top-4 left-4 text-[10px] uppercase tracking-[0.4em] text-black/70"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+              >
+                {albumName}
+              </p>
+              <TitleBlock pos={titlePos}>
+                <p
+                  className="text-2xl text-black"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
+                  {bandName}
+                </p>
+              </TitleBlock>
             </div>
           </div>
-          {/* subtitle: top */}
-          <p
-            className="absolute top-8 left-8 text-[10px] uppercase tracking-[0.4em] text-black/70"
-            style={{ fontFamily: "'Inter', sans-serif" }}
-          >
-            {albumName}
-          </p>
-          <TitleBlock pos={titlePos}>
-            <p
-              className="text-2xl text-black"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              {bandName}
-            </p>
-          </TitleBlock>
         </div>
       );
 

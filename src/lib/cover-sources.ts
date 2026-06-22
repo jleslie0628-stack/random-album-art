@@ -45,9 +45,17 @@ export async function fetchRandomWiki(): Promise<WikiResult> {
 
 export async function fetchRandomQuote(): Promise<QuoteResult> {
   if (Math.random() < 0.5) {
+    try {
+      return await fetchRandomQuoteDummyJSON();
+    } catch {
+      return fetchRandomQuoteZen();
+    }
+  }
+  try {
+    return await fetchRandomQuoteZen();
+  } catch {
     return fetchRandomQuoteDummyJSON();
   }
-  return fetchRandomQuoteZen();
 }
 
 function extractQuoteTail(quote: string): string {
