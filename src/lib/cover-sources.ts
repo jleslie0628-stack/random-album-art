@@ -10,6 +10,7 @@ export interface QuoteResult {
   tail: string; // last 3-4 words
   author: string;
   url: string;
+  source: "dummyjson" | "zenquotes";
 }
 
 export interface ImageResult {
