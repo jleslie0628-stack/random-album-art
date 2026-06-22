@@ -241,7 +241,10 @@ function Index() {
                     <SourceLink href={cover.band.url} label="Wikipedia article" />
                   </li>
                   <li>
-                    <SourceLink href={cover.album.url} label="Quote (DummyJSON)" />
+                    <SourceLink
+                      href={cover.album.url}
+                      label={`Quote (${quoteSourceLabel(cover.album.source)})`}
+                    />
                   </li>
                   <li>
                     <SourceLink href={cover.image.pageUrl} label="Photo (Picsum)" />
