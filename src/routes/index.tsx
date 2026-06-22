@@ -241,7 +241,10 @@ function Index() {
                     <SourceLink href={cover.band.url} label="Wikipedia article" />
                   </li>
                   <li>
-                    <SourceLink href={cover.album.url} label="Quote (DummyJSON)" />
+                    <SourceLink
+                      href={cover.album.url}
+                      label={`Quote (${quoteSourceLabel(cover.album.source)})`}
+                    />
                   </li>
                   <li>
                     <SourceLink href={cover.image.pageUrl} label="Photo (Picsum)" />
@@ -287,7 +290,7 @@ function Index() {
         )}
 
         <footer className="mt-20 border-t border-zinc-900 pt-6 text-xs text-zinc-600">
-          Random data from Wikipedia, DummyJSON quotes, and Picsum Photos.
+          Random data from Wikipedia, DummyJSON / Zen Quotes, and Picsum Photos.
         </footer>
       </div>
     </main>
@@ -336,6 +339,16 @@ function SourceLink({ href, label }: { href: string; label: string }) {
       {label} ↗
     </a>
   );
+}
+
+function quoteSourceLabel(source: QuoteResult["source"] | undefined) {
+  switch (source) {
+    case "zenquotes":
+      return "Zen Quotes";
+    case "dummyjson":
+    default:
+      return "DummyJSON";
+  }
 }
 
 /* ---------------- Cover art renderer ---------------- */

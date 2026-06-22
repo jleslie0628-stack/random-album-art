@@ -10,6 +10,7 @@ export interface QuoteResult {
   tail: string; // last 3-4 words
   author: string;
   url: string;
+  source: "dummyjson" | "zenquotes";
 }
 
 export interface ImageResult {
@@ -43,19 +44,44 @@ export async function fetchRandomWiki(): Promise<WikiResult> {
 
 
 export async function fetchRandomQuote(): Promise<QuoteResult> {
+  if (Math.random() < 0.5) {
+    return fetchRandomQuoteDummyJSON();
+  }
+  return fetchRandomQuoteZen();
+}
+
+function extractQuoteTail(quote: string): string {
+  const cleaned = quote.replace(/[.!?,;:"']+$/g, "").trim();
+  const words = cleaned.split(/\s+/);
+  const count = words.length >= 4 ? (Math.random() < 0.5 ? 3 : 4) : words.length;
+  return words.slice(-count).join(" ");
+}
+
+async function fetchRandomQuoteDummyJSON(): Promise<QuoteResult> {
   const res = await fetch("https://dummyjson.com/quotes/random");
   if (!res.ok) throw new Error("Quote request failed");
   const data = await res.json();
   const quote: string = data.quote ?? "";
-  const cleaned = quote.replace(/[.!?,;:"']+$/g, "").trim();
-  const words = cleaned.split(/\s+/);
-  const count = words.length >= 4 ? (Math.random() < 0.5 ? 3 : 4) : words.length;
-  const tail = words.slice(-count).join(" ");
   return {
     fullQuote: quote,
-    tail,
+    tail: extractQuoteTail(quote),
     author: data.author ?? "Unknown",
     url: `https://dummyjson.com/quotes/${data.id}`,
+    source: "dummyjson",
+  };
+}
+
+async function fetchRandomQuoteZen(): Promise<QuoteResult> {
+  const res = await fetch("https://zenquotes.io/api/random");
+  if (!res.ok) throw new Error("Zen quote request failed");
+  const data = (await res.json())[0];
+  const quote: string = data.q ?? "";
+  return {
+    fullQuote: quote,
+    tail: extractQuoteTail(quote),
+    author: data.a ?? "Unknown",
+    url: "https://zenquotes.io/",
+    source: "zenquotes",
   };
 }
 
