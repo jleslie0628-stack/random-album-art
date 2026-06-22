@@ -341,6 +341,16 @@ function SourceLink({ href, label }: { href: string; label: string }) {
   );
 }
 
+function quoteSourceLabel(source: QuoteResult["source"] | undefined) {
+  switch (source) {
+    case "zenquotes":
+      return "Zen Quotes";
+    case "dummyjson":
+    default:
+      return "DummyJSON";
+  }
+}
+
 /* ---------------- Cover art renderer ---------------- */
 
 function useImageBrightness(imageUrl: string): number | null {
