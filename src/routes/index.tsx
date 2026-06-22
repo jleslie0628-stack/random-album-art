@@ -290,7 +290,7 @@ function Index() {
         )}
 
         <footer className="mt-20 border-t border-zinc-900 pt-6 text-xs text-zinc-600">
-          Random data from Wikipedia, DummyJSON quotes, and Picsum Photos.
+          Random data from Wikipedia, DummyJSON / Zen Quotes, and Picsum Photos.
         </footer>
       </div>
     </main>
