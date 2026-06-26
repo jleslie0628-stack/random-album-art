@@ -162,7 +162,7 @@ function Index() {
               className="mt-2 text-5xl md:text-6xl leading-none text-white"
               style={{ fontFamily: "'Archivo Black', sans-serif" }}
             >
-              Fake Album Maker
+              Accidental Albums
             </h1>
             <p className="mt-3 max-w-xl text-sm text-zinc-400">
               A random Wikipedia article becomes your band. The tail of a random
