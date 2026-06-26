@@ -33,7 +33,7 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Wiki Band — Random CD Cover Generator" },
+      { title: "Accidental Albums — Random CD Cover Generator" },
       {
         name: "description",
         content:
